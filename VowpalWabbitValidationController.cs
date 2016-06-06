@@ -4,6 +4,7 @@ using Microsoft.Research.MultiWorldTesting.Contract;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -31,12 +32,13 @@ namespace DecisionServiceWebAPI
 
             var userToken = header.Value.First();
 
-            if (string.IsNullOrWhiteSpace(userToken))
-                throw new UnauthorizedAccessException("AuthorizationToken missing");
+            if (string.IsNullOrWhiteSpace(userToken) || userToken != ConfigurationManager.AppSettings["UserToken"])
+                return Request.CreateResponse(HttpStatusCode.Unauthorized);
 
             if (this.metaData == null || lastDownload + TimeSpan.FromMinutes(1) < DateTime.Now)
             {
-                this.metaData = ApplicationMetadataUtil.DownloadMetadata<ApplicationClientMetadata>(CloudConfigurationManager.GetSetting("DecisionServiceTrainerSettingsUrl"));
+                var url = ConfigurationManager.AppSettings["DecisionServiceSettingsUrl"];
+                this.metaData = ApplicationMetadataUtil.DownloadMetadata<ApplicationClientMetadata>(url);
                 lastDownload = DateTime.Now;
             }
 

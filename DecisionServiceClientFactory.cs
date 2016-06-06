@@ -3,18 +3,18 @@ using Microsoft.Research.MultiWorldTesting.ClientLibrary;
 using Microsoft.Research.MultiWorldTesting.JoinUploader;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 
 namespace DecisionServiceWebAPI
 {
     static class DecisionServiceClientFactory
     {
-        private static DecisionServiceConfiguration Create(string mwttoken)
+        private static DecisionServiceConfiguration CreateConfiguration(string settingsUrl)
         {
             var telemetry = new TelemetryClient();
-            telemetry.Context.User.Id = mwttoken;
-            telemetry.TrackEvent("DecisionServiceClient creation");
+            telemetry.TrackEvent($"DecisionServiceClient created: '{settingsUrl}'");
 
-            return new DecisionServiceConfiguration(mwttoken)
+            return new DecisionServiceConfiguration(settingsUrl)
             {
                 InteractionUploadConfiguration = new BatchingConfiguration
                 {
@@ -30,14 +30,14 @@ namespace DecisionServiceWebAPI
             };
         }
 
-        public static DecisionServiceClient<string, int, int> AddOrGetExistingPolicy(string mwttoken)
+        public static DecisionServiceClient<string, int, int> AddOrGetExistingPolicy(string settingsUrl)
         {
-            return DecisionServiceStaticClient.AddOrGetExisting("policy" + mwttoken, _ => DecisionService.WithPolicy(Create(mwttoken)).WithJson());
+            return DecisionServiceStaticClient.AddOrGetExisting("policy" + settingsUrl, _ => DecisionService.WithPolicy(CreateConfiguration(settingsUrl)).WithJson());
         }
 
-        public static DecisionServiceClient<string, int[], int[]> AddOrGetExistingRanker(string mwttoken)
+        public static DecisionServiceClient<string, int[], int[]> AddOrGetExistingRanker(string settingsUrl)
         {
-            return DecisionServiceStaticClient.AddOrGetExisting("ranker" + mwttoken, _ => DecisionService.WithRanker(Create(mwttoken)).WithJson());
+            return DecisionServiceStaticClient.AddOrGetExisting("ranker" + settingsUrl, _ => DecisionService.WithRanker(CreateConfiguration(settingsUrl)).WithJson());
         }
     }
 }

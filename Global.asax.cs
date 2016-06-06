@@ -16,12 +16,11 @@ namespace DecisionServiceWebAPI
             {
                 config.MapHttpAttributeRoutes();
 
-              config.Routes.IgnoreRoute("Html", "{file}.html");
+                config.Routes.IgnoreRoute("Html", "{file}.html");
 
                 config.Routes.MapHttpRoute(
                     name: "DefaultApi",
-                    routeTemplate: "api/{controller}/{id}",
-                    defaults: new { id = RouteParameter.Optional }
+                    routeTemplate: "{controller}"
                 );
             });
         }

@@ -2,8 +2,10 @@
 using Microsoft.Research.MultiWorldTesting.ExploreLibrary;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Diagnostics;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -16,14 +18,16 @@ namespace DecisionServiceWebAPI
     public class DecisionPolicyController : ApiController
     {
         // POST api/decisionPolicy
-        public async Task<HttpResponseMessage> Post([FromUri] int? defaultAction = null)
+        [Route("policy")]
+        public async Task<HttpResponseMessage> Post([FromUri] int? defaultAction)
         {
             return await DecisionUtil.ChooseAction(
                 this.Request,
                 "Policy",
                 (telemetry, input) =>
                 {
-                    var client = DecisionServiceClientFactory.AddOrGetExistingPolicy(input.MwtToken);
+                    var url = ConfigurationManager.AppSettings["DecisionServiceSettingsUrl"];
+                    var client = DecisionServiceClientFactory.AddOrGetExistingPolicy(url);
                     return defaultAction != null ?
                         client.ChooseAction(input.EventId, input.Context, (int)defaultAction) :
                         client.ChooseAction(input.EventId, input.Context);
@@ -33,7 +37,8 @@ namespace DecisionServiceWebAPI
 
     public class DecisionRankerController : ApiController
     {
-        // POST api/decisionRanker
+        // POST 
+        [Route("ranker")]
         public async Task<HttpResponseMessage> Post([FromUri] int[] defaultActions)
         {
             return await DecisionUtil.ChooseAction(
@@ -41,7 +46,8 @@ namespace DecisionServiceWebAPI
                 "Ranker",
                 (telemetry, input) =>
                 {
-                    var client = DecisionServiceClientFactory.AddOrGetExistingRanker(input.MwtToken);
+                    var url = ConfigurationManager.AppSettings["DecisionServiceSettingsUrl"];
+                    var client = DecisionServiceClientFactory.AddOrGetExistingRanker(url);
                     var action = defaultActions != null && defaultActions.Length > 0 ?
                         client.ChooseAction(input.EventId, input.Context, defaultActions) :
                         client.ChooseAction(input.EventId, input.Context);
@@ -64,23 +70,22 @@ namespace DecisionServiceWebAPI
                 if (header.Value == null)
                     throw new UnauthorizedAccessException("AuthorizationToken missing");
 
-                this.MwtToken = header.Value.First();
+                this.UserToken = header.Value.First();
 
-                if (string.IsNullOrWhiteSpace(this.MwtToken))
+                if (string.IsNullOrWhiteSpace(this.UserToken))
                     throw new UnauthorizedAccessException("AuthorizationToken missing");
 
-                this.EventId = new UniqueEventID
-                {
-                    Key = Guid.NewGuid().ToString("N", CultureInfo.InvariantCulture),
-                    TimeStamp = DateTime.UtcNow
-                };
+                if (this.UserToken != ConfigurationManager.AppSettings["UserToken"])
+                    throw new UnauthorizedAccessException();
+
+                this.EventId = Guid.NewGuid().ToString("N", CultureInfo.InvariantCulture);
             }
 
             internal string Context { get; private set; }
 
-            internal string MwtToken { get; private set; }
+            internal string UserToken { get; private set; }
 
-            internal UniqueEventID EventId { get; private set; }
+            internal string EventId { get; private set; }
         }
 
         internal static async Task<HttpResponseMessage> ChooseAction<T>(HttpRequestMessage request, string name, Func<TelemetryClient, Input, T> operation)
@@ -91,19 +96,17 @@ namespace DecisionServiceWebAPI
             try
             {
                 var input = new Input(request, await request.Content.ReadAsStringAsync());
-                telemetry.Context.User.Id = input.MwtToken;
 
                 // actual choose action call
                 var action = operation(telemetry, input);
 
                 telemetry.Context.Operation.Name = "ChooseAction";
-                telemetry.Context.Operation.Id = input.EventId.Key + " " + input.EventId.TimeStamp.ToString("o", CultureInfo.InvariantCulture);
+                telemetry.Context.Operation.Id = input.EventId.ToString();
 
                 var response = new
                 {
                     Action = action,
-                    EventId = input.EventId.Key,
-                    TimeStamp = input.EventId.TimeStamp,
+                    EventId = input.EventId
                 };
 
                 stopwatch.Stop();
