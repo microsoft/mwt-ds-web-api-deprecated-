@@ -30,14 +30,9 @@ namespace DecisionServiceWebAPI
             };
         }
 
-        public static DecisionServiceClient<string, int, int> AddOrGetExistingPolicy(string settingsUrl)
+        public static DecisionServiceClient<string> AddOrGetExisting(string settingsUrl)
         {
-            return DecisionServiceStaticClient.AddOrGetExisting("policy" + settingsUrl, _ => DecisionService.WithPolicy(CreateConfiguration(settingsUrl)).WithJson());
-        }
-
-        public static DecisionServiceClient<string, int[], int[]> AddOrGetExistingRanker(string settingsUrl)
-        {
-            return DecisionServiceStaticClient.AddOrGetExisting("ranker" + settingsUrl, _ => DecisionService.WithRanker(CreateConfiguration(settingsUrl)).WithJson());
+            return DecisionServiceStaticClient.AddOrGetExisting(settingsUrl, _ => DecisionService.CreateJson(CreateConfiguration(settingsUrl)));
         }
     }
 }

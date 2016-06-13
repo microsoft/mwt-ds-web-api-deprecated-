@@ -27,7 +27,7 @@ namespace DecisionServiceWebAPI
                 (telemetry, input) =>
                 {
                     var url = ConfigurationManager.AppSettings["DecisionServiceSettingsUrl"];
-                    var client = DecisionServiceClientFactory.AddOrGetExistingPolicy(url);
+                    var client = DecisionServiceClientFactory.AddOrGetExisting(url);
                     return defaultAction != null ?
                         client.ChooseAction(input.EventId, input.Context, (int)defaultAction) :
                         client.ChooseAction(input.EventId, input.Context);
@@ -47,10 +47,10 @@ namespace DecisionServiceWebAPI
                 (telemetry, input) =>
                 {
                     var url = ConfigurationManager.AppSettings["DecisionServiceSettingsUrl"];
-                    var client = DecisionServiceClientFactory.AddOrGetExistingRanker(url);
+                    var client = DecisionServiceClientFactory.AddOrGetExisting(url);
                     var action = defaultActions != null && defaultActions.Length > 0 ?
-                        client.ChooseAction(input.EventId, input.Context, defaultActions) :
-                        client.ChooseAction(input.EventId, input.Context);
+                        client.ChooseRanking(input.EventId, input.Context, defaultActions) :
+                        client.ChooseRanking(input.EventId, input.Context);
 
                     return action;
                 });
