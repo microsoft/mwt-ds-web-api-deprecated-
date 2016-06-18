@@ -446,7 +446,8 @@
                 }
 
                 // Update reward request
-                $("#rewardRequest").text("https://{hostname}/api/reward?reward=1&eventId=" + eventId + "&timestamp=" + timestamp);
+                // TODO: reward=1 needs to be passed as data
+                $("#rewardRequest").text("https://{hostname}/reward/" + eventId);
 
                 // Disable decide button
                 $("#getDecision").prop("disabled", true);

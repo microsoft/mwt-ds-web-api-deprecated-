@@ -5,7 +5,6 @@
     <meta charset="utf-8" />
 
     <link href="bower_components/jsoneditor/dist/jsoneditor.min.css" rel="stylesheet" type="text/css">
-    <script type="text/javascript" src="bower_components/jsoneditor/dist/jsoneditor.min.js"></script>
 
     <link rel="stylesheet" type="text/css" href="Content/bootstrap.css" />
     <link rel="stylesheet" type="text/css" href="Content/site.css" />
@@ -43,9 +42,13 @@
 
     <br /><br />
 
+    Timer:  <div id="timer" > </div>
 
+    <br/>
 
     <div class="row">
+
+
 
         <!-- Left pane -->
         <div class="col-md-6" style="border-right:1px solid; margin:0 auto">
@@ -55,9 +58,12 @@
                 <div class="col-md-6">
                     <div class="thumbnail content-item" id="article1">
                         <div class="caption" style="padding-bottom:0px">
-                            <p style="margin-bottom: 10px; margin-top: 0px;">Bloomberg says he will not enter presidential race</p>
+                            <p style="margin-bottom: 10px; margin-top: 0px;" id="locationText"></p>
                             <div style="width: 230px; height: 200px; overflow:hidden">
-                                <img style="width: 230px; height: 316.8px;" src="https://upload.wikimedia.org/wikipedia/commons/4/42/Michael_R_Bloomberg.jpg" alt="...">
+                                <img style="width: 230px; height: 316.8px;" 
+                                     id="location"
+                                     src="" 
+                                     alt="...">
                             </div>
 
                         </div>
@@ -67,9 +73,12 @@
                 <div class="col-md-6">
                     <div class="thumbnail content-item" id="article2">
                         <div class="caption" style="padding-bottom:0px">
-                            <p style="margin-bottom: 10px; margin-top: 0px;">What counts as artificially intelligent? AI explained</p>
+                            <p style="margin-bottom: 10px; margin-top: 0px;" id="articleText"></p>
                             <div style="width: 230px; height: 200px; overflow:hidden">
-                                <img style="width: 260.7px; height: 200px; margin-left:-10px" src="https://upload.wikimedia.org/wikipedia/commons/2/28/Artificial-intelligence-elon-musk-hawking.jpg" alt="...">
+                                <img style="width: 260.7px; height: 200px; margin-left:-10px" 
+                                     id="article"
+                                     src="" 
+                                     alt="...">
                             </div>
 
                         </div>
@@ -77,13 +86,13 @@
                 </div>
             </div>
             </br>
-            <div class="row" style="text-align: center;">
+            <!--<div class="row" style="text-align: center;">
                 <div class="col-md-6">
                     <div class="thumbnail content-item" id="article3">
                         <div class="caption" style="padding-bottom:0px">
                             <p style="margin-bottom: 10px; margin-top: 0px;">Why the Federal Reserve isn't out of options yet</p>
                             <div style="width: 230px; height: 200px; overflow:hidden">
-                                <img style="width: 360px; height: 200px; overflow:hidden; margin-left:-60px" src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/Marriner_S._Eccles_Federal_Reserve_Board_Building.jpg/1280px-Marriner_S._Eccles_Federal_Reserve_Board_Building.jpg" alt="...">
+                                <img style="width: 360px; height: 200px; overflow:hidden; margin-left:-60px" src=" alt="...">
                             </div>
 
                         </div>
@@ -93,15 +102,15 @@
                 <div class="col-md-6">
                     <div class="thumbnail content-item" id="article4">
                         <div class="caption" style="padding-bottom:0px">
-                            <p style="margin-bottom: 10px; margin-top: 0px;">12 great animated movies not made by Disney</p>
+                            <p style="margin-bottom: 10px; margin-top: 0px;"></p>
                             <div style="width: 230px; height: 200px; overflow:hidden">
-                                <img style="width: 355px; height: 200px; overflow:hidden; margin-left:-60px; margin-bottom:-60px" src="https://c2.staticflickr.com/6/5571/15100639546_d1d29d8ee0_b.jpg" alt="...">
+                                <img style="width: 355px; height: 200px; overflow:hidden; margin-left:-60px; margin-bottom:-60px" src="" alt="...">
                             </div>
 
                         </div>
                     </div>
                 </div>
-            </div>
+            </div>-->
 
             <br />
 
@@ -123,72 +132,66 @@
     </div>
 
 
-
-
-
-
     <script type="text/javascript" src="scripts/jquery-2.2.3.min.js"></script>
     <script type="text/javascript" src="scripts/bootstrap.js"></script>
 
     <script>
-        // create the editor
-        var container = document.getElementById("jsoneditor");
-        var options = {
-            mode: 'code',
-            modes: ['code', 'tree'], // allowed modes
-        };
-        var editor = new JSONEditor(container, options);
+        var locations = [
+            { 
+                key: "NYC",
+                text: "New York City",
+                image:"https://upload.wikimedia.org/wikipedia/commons/9/9d/NYC_Montage_2014_4_-_Jleon.jpg"
+            },
+            { 
+                key: "DC",
+                text: "Washington D.C.",
+                image:"https://upload.wikimedia.org/wikipedia/commons/5/58/Washington_D.C._Montage_Proposal_6.jpg"
+            },
+            { 
+                key: "Seattle",
+                text: "Seattle",
+                image:"https://upload.wikimedia.org/wikipedia/commons/2/2f/Space_Needle002.jpg"
+            }
+        ];
 
-        // set json
-        var json = {
-            "Age": 25,
-            "Location": "New York",
-            _multi: [
-                {"a":1},
-                { "a": 2 }
-            ]
-        };
-        editor.set(json);
+        var actions = [
+            {
+                text: "Bloomberg says he will not enter presidential race",
+                image: "https://upload.wikimedia.org/wikipedia/commons/4/42/Michael_R_Bloomberg.jpg"
+            },
+            {
+                text: "What counts as artificially intelligent? AI explained",
+                image: "https://upload.wikimedia.org/wikipedia/commons/2/28/Artificial-intelligence-elon-musk-hawking.jpg"
+            },
+            {
+                text: "Why the Federal Reserve isn't out of options yet",
+                image: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/Marriner_S._Eccles_Federal_Reserve_Board_Building.jpg/1280px-Marriner_S._Eccles_Federal_Reserve_Board_Building.jpg"
+            },
+            {
+                text: "12 great animated movies not made by Disney",
+                image: "https://c2.staticflickr.com/6/5571/15100639546_d1d29d8ee0_b.jpg"
+            }
+        ];
 
-        var lastJson = "";
-        setInterval(function () {
-            var newJson = editor.getText();
+        var secondsLeft = 10;
+        var locationIndex = 0;
+        var eventId;
 
-            if (lastJson == newJson)
-                return;
+        function chooseAction() {
+            locationIndex = (locationIndex + 1) % locations.length;
+            $("#location").attr("src", locations[locationIndex].image);
+            $("#locationText").text(locations[locationIndex].text);
+            $("#article").attr("src", "");
 
-            lastJson = newJson;
+            secondsLeft = 10;
 
-            $.ajax({
-                method: "POST",
-                url: "/vowpalWabbitValidation",
-                data: newJson,
-                contentType: "application/json; charset=utf-8",
-                dataType: "json",
-                headers: {
-                    "Authorization": $("#userToken").val()
-                },
-            })
-            .done(function (data) {
-                $("#vwstr").html("<pre>" + data + "</pre>");
-            })
-            .fail(function (jqXHR, textStatus, errorThrown) {
-                $("#vwstr").html("<font color='red'>" + jqXHR.responseJSON.ExceptionMessage + "</font>");
-            });
+            var context = { "Location":locations[locationIndex].key };
 
-        }, 500);
-
-        setInterval(function () {
-            $(".authKeyText").text($("#userToken").val());
-        }, 500);
-
-        function Submit()
-        {
             // Get Decision
             $.ajax({
                 method: "POST",
-                url: "/ranker",
-                data: editor.getText(),
+                url: "/policy",
+                data: JSON.stringify(context),
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",
                 headers: {
@@ -196,39 +199,44 @@
                 },
             })
             .done(function (data) {
-                $("#statusDecision").text("Success");
-
-                $("#EventId").text(data.EventId);
-                $("#rewardEventId").text(data.EventId);
+                
+                console.log(data);
+                eventId = data.EventId;
+                $("#article").attr("src", actions[data.Action - 1].image);
+                $("#articleText").text(actions[data.Action - 1].text);
             })
             .fail(function (jqXHR, textStatus, errorThrown) {
                 $("#status").text("Error: " + textStatus + "  " + errorThrown);
             });
-        }
+        };
+        chooseAction();
 
-        function SubmitReward() {
-            $.ajax({
-                method: "POST",
-                url: "/reward/" + $("#EventId").text(),
-                data: $("#reward").val(),
-                headers: {
-                    "Authorization": $("#userToken").val()
-                },
-            })
-            .done(function (data) {
-                $("#statusReward").text("Success");
+        setInterval(function () {
+            $("#timer").text(secondsLeft + " seconds left");
+            secondsLeft--;
 
-                $("#EventId").text(data.EventId);
-                $("#TimeStamp").text(data.TimeStamp);
-            })
-            .fail(function (jqXHR, textStatus, errorThrown) {
-                $("#status").text("Error: " + textStatus + "  " + errorThrown);
-            });
-        }
+            if (secondsLeft < 0)
+                chooseAction();
+            }, 1000);
 
 
+        //$.ajax({
+        //    method: "POST",
+        //    url: "/reward/" + eventId,
+        //    data: $("#reward").val(),
+        //    headers: {
+        //        "Authorization": $("#userToken").val()
+        //    },
+        //})
+        //.done(function (data) {
+        //    $("#statusReward").text("Success");
 
-
+        //    $("#EventId").text(data.EventId);
+        //    $("#TimeStamp").text(data.TimeStamp);
+        //})
+        //.fail(function (jqXHR, textStatus, errorThrown) {
+        //    $("#status").text("Error: " + textStatus + "  " + errorThrown);
+        //});
 
     </script>
 </body>

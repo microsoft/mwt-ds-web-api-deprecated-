@@ -19,7 +19,7 @@ namespace DecisionServiceWebAPI
     {
         // POST api/decisionPolicy
         [Route("policy")]
-        public async Task<HttpResponseMessage> Post([FromUri] int? defaultAction)
+        public async Task<HttpResponseMessage> Post([FromUri] int defaultAction = -1)
         {
             return await DecisionUtil.ChooseAction(
                 this.Request,
@@ -28,8 +28,8 @@ namespace DecisionServiceWebAPI
                 {
                     var url = ConfigurationManager.AppSettings["DecisionServiceSettingsUrl"];
                     var client = DecisionServiceClientFactory.AddOrGetExisting(url);
-                    return defaultAction != null ?
-                        client.ChooseAction(input.EventId, input.Context, (int)defaultAction) :
+                    return defaultAction != -1 ?
+                        client.ChooseAction(input.EventId, input.Context, defaultAction) :
                         client.ChooseAction(input.EventId, input.Context);
                 });
         }
