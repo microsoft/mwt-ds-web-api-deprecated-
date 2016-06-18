@@ -307,7 +307,11 @@
     <Content Include="bower_components\jsoneditor\dist\jsoneditor.map" />
     <Content Include="bower_components\jsoneditor\dist\jsoneditor.min.css" />
     <Content Include="bower_components\jsoneditor\dist\jsoneditor.min.js" />
+    <Content Include="Content\bootstrap.css" />
+    <Content Include="Content\site.css" />
+    <Content Include="game.html" />
     <Content Include="Global.asax" />
+    <Content Include="guide.html" />
     <Content Include="index.html" />
     <Content Include="packages.config">
       <SubType>Designer</SubType>
@@ -319,6 +323,8 @@
     <None Include="Properties\PublishProfiles\mcdel43-webapi - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\mcdel5-webapi - Web Deploy.pubxml" />
     <None Include="scripts\jquery-2.2.3.intellisense.js" />
+    <Content Include="playground.html" />
+    <Content Include="scripts\bootstrap.js" />
     <Content Include="scripts\jquery-2.2.3.js" />
     <Content Include="scripts\jquery-2.2.3.min.js" />
     <None Include="Properties\PublishProfiles\DecisionServiceWebAPI20160202090547.pubxml" />
