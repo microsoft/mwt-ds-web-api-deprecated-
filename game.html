@@ -37,7 +37,7 @@
 
     <div class="input-group" style="margin: 0 auto; width:300px">
         <div class="input-group-addon" style="color:black">Authorization token: </div>
-        <input type="text" class="form-control" id="userToken" placeholder="Web service token">
+        <input type="text" class="form-control" id="userToken" placeholder="Web service token" value="abc">
     </div>
 
     <br /><br />
@@ -113,8 +113,13 @@
             </div>-->
 
             <br />
+            <a href="javascript:reportReward(1);">like</a> &nbsp;
+            <a href="javascript:reportReward(-1);">don't like</a> &nbsp;  <br/>
 
+            <div id="status" ></div>
+            <div id="statusReward"></div>
         </div>
+
 
 
         <!-- Right pane -->
@@ -200,7 +205,7 @@
             })
             .done(function (data) {
                 
-                console.log(data);
+                // console.log(data);
                 eventId = data.EventId;
                 $("#article").attr("src", actions[data.Action - 1].image);
                 $("#articleText").text(actions[data.Action - 1].text);
@@ -212,6 +217,12 @@
         chooseAction();
 
         setInterval(function () {
+            if ($("#userToken").val().length == 0)
+            {
+                $("#timer").text("Set userToken");
+                return;
+            }
+
             $("#timer").text(secondsLeft + " seconds left");
             secondsLeft--;
 
@@ -219,25 +230,25 @@
                 chooseAction();
             }, 1000);
 
-
-        //$.ajax({
-        //    method: "POST",
-        //    url: "/reward/" + eventId,
-        //    data: $("#reward").val(),
-        //    headers: {
-        //        "Authorization": $("#userToken").val()
-        //    },
-        //})
-        //.done(function (data) {
-        //    $("#statusReward").text("Success");
-
-        //    $("#EventId").text(data.EventId);
-        //    $("#TimeStamp").text(data.TimeStamp);
-        //})
-        //.fail(function (jqXHR, textStatus, errorThrown) {
-        //    $("#status").text("Error: " + textStatus + "  " + errorThrown);
-        //});
-
+        function reportReward(reward) {
+            var thisEventId = eventId;
+            
+            $.ajax({
+                method: "POST",
+                url: "/reward/" + eventId,
+                data: "" + reward,
+                headers: {
+                    "Authorization": $("#userToken").val()
+                },
+            })
+            .done(function (data) {
+                $("#statusReward").text("Success " + thisEventId + ": " + reward);
+                chooseAction();
+            })
+            .fail(function (jqXHR, textStatus, errorThrown) {
+                $("#status").text("Error: " + textStatus + "  " + errorThrown);
+            });            
+        }
     </script>
 </body>
 </html>

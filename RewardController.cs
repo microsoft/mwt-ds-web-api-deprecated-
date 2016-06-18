@@ -42,7 +42,8 @@ namespace DecisionServiceWebAPI
                 telemetry.Context.Operation.Id = eventId;
 
                 // support simply float and complex JSON outcomes
-                var rewardObj = JToken.ReadFrom(new JsonTextReader(new StreamReader(await Request.Content.ReadAsStreamAsync())));
+                var rewardStr = await Request.Content.ReadAsStringAsync();
+                var rewardObj = JToken.Parse(rewardStr);
 
                 // parse input
                 var guid = Guid.ParseExact(eventId, "N");
