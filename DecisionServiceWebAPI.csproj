@@ -337,6 +337,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="scripts\site.js" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -344,6 +345,9 @@
   <ItemGroup>
     <Compile Include="DecisionServiceClientFactory.cs" />
     <Compile Include="DecisionController.cs" />
+    <Compile Include="EvaluationController.cs" />
+    <Compile Include="Eval\EvalD3.cs" />
+    <Compile Include="Eval\EvalResult.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
