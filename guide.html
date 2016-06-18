@@ -365,10 +365,11 @@
 
             // Reward radio buttons
             $("input[name='rewardRadio']").change(function () {
+        // TODO: show reward as body
                 if ($("input[name='rewardRadio']:checked").val() == 'Click')
-                    $("#rewardRequest").text("https://{hostname}/api/reward?reward=1&eventId=" + eventId + "&timestamp=" + timestamp);
+                    $("#rewardRequest").text("https://{hostname}/api/reward/" + eventId);
                 else {
-                    $("#rewardRequest").text("https://{hostname}/api/reward?reward=0&eventId=" + eventId + "&timestamp=" + timestamp);
+                    $("#rewardRequest").text("https://{hostname}/api/reward/" + eventId);
                 }
 
             });
